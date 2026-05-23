@@ -1,0 +1,40 @@
+vision_primary:
+  provider: anthropic
+  model: claude-sonnet-4-6
+  capabilities:
+    - text
+    - vision
+  max_output_tokens: 8192
+  temperature: 0.0
+  pricing:
+    input_per_mtok: 3.0
+    output_per_mtok: 15.0
+    cached_input_per_mtok: 0.30
+
+vision_economy:
+  provider: anthropic
+  model: claude-haiku-4-5-20251001
+  capabilities:
+    - text
+    - vision
+  max_output_tokens: 4096
+  temperature: 0.0
+  pricing:
+    input_per_mtok: 1.0
+    output_per_mtok: 5.0
+    cached_input_per_mtok: 0.10
+
+vision_fallback:
+  provider: openai_compatible
+  model: your-configured-vision-model
+  base_url: ${OPENAI_COMPATIBLE_BASE_URL}
+  api_key_env: OPENAI_COMPATIBLE_API_KEY
+  capabilities:
+    - text
+    - vision
+  max_output_tokens: 8192
+  temperature: 0.0
+  pricing:
+    input_per_mtok: null
+    output_per_mtok: null
+    cached_input_per_mtok: null

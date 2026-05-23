@@ -1,0 +1,28 @@
+table_ocr_v1:
+  version: "table_ocr_v1"
+  content: |
+    请将这张图片中的表格转换为标准 Markdown 表格。
+    要求：
+    1. 保持所有行和列
+    2. 表头下方必须有分隔线
+    3. 空单元格使用 "-"
+    4. 只返回 Markdown 表格，不要解释
+
+flowchart_mermaid_v1:
+  version: "flowchart_mermaid_v1"
+  content: |
+    请将这张流程图转换为 Mermaid。
+    要求：
+    1. 保留所有节点和连接关系
+    2. 判断方向使用 flowchart TD 或 flowchart LR
+    3. 使用 ```mermaid 代码块包裹
+    4. 只返回 Mermaid 代码块
+
+mixed_content_v1:
+  version: "mixed_content_v1"
+  content: |
+    请分析这张图片的内容，将其转换为 Markdown 格式。
+    如果包含表格，请使用标准 Markdown 表格格式。
+    如果包含流程图，请转换为 Mermaid 代码。
+    如果包含普通文本，请保留原文结构。
+    只返回转换结果，不要解释。

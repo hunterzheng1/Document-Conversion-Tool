@@ -1,0 +1,68 @@
+app:
+  name: DocumentConverter
+  version: "1.0.0"
+
+input:
+  supported_formats:
+    - pdf
+
+output:
+  default_format: markdown
+  generate_report: true
+  include_page_markers: true
+  failed_page_placeholder: true
+
+pdf:
+  render_dpi: 200
+  max_pages: null
+  password: null
+
+image:
+  max_long_edge: 1568
+  format: png
+  crop_margins: true
+  compression_quality: 90
+
+models:
+  default_profile: auto
+  config_file: config/models.yaml
+
+cache:
+  enabled: true
+  path: .docconv_cache
+  ttl_days: 14
+  max_size_gb: 5
+
+resume:
+  enabled: true
+  state_dir: .docconv_state
+  auto_resume: true
+  retry_failed_once: true
+
+validation:
+  enabled: true
+  table:
+    enabled: true
+    auto_fix: true
+    max_retries: 2
+  mermaid:
+    enabled: true
+    auto_fix: true
+    max_retries: 2
+    use_cli_validation: false
+
+concurrency:
+  ai_default_workers: 2
+  ai_min_workers: 1
+  ai_max_workers: 5
+  timeout_seconds: 120
+
+logging:
+  level: INFO
+  file: null
+  redact_sensitive_content: true
+
+sensitive_mode:
+  disable_disk_cache: true
+  disable_ai_output_cache: true
+  redact_logs: true
