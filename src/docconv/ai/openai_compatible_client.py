@@ -16,11 +16,12 @@ class OpenAICompatibleClient(ModelManager):
         self._api_key = cfg.get("api_key") or os.environ.get("OPENAI_API_KEY", "")
         self._model = cfg.get("model", "gpt-4o")
         self._base_url = cfg.get("base_url")
+        self._timeout = cfg.get("timeout", 120)
 
     def _get_client(self) -> Any:
         try:
             from openai import AsyncOpenAI
-            kwargs = {"api_key": self._api_key}
+            kwargs = {"api_key": self._api_key, "timeout": self._timeout}
             if self._base_url:
                 kwargs["base_url"] = self._base_url
             return AsyncOpenAI(**kwargs)
@@ -68,13 +69,13 @@ class OpenAICompatibleClient(ModelManager):
         token_usage = TokenUsage(
             input_tokens=usage.prompt_tokens,
             output_tokens=usage.completion_tokens,
-            total_tokens=usage.total_tokens,
+            cached_input_tokens=getattr(usage, "prompt_tokens_details", {}).get("cached_tokens", 0) if usage else 0,
         ) if usage else None
 
         return ModelResponse(
             text=text,
-            model=self._model,
-            token_usage=token_usage,
+            model_used=self._model,
+            usage=token_usage,
             finish_reason=response.choices[0].finish_reason or "stop",
         )
 
@@ -100,12 +101,12 @@ class OpenAICompatibleClient(ModelManager):
         token_usage = TokenUsage(
             input_tokens=usage.prompt_tokens,
             output_tokens=usage.completion_tokens,
-            total_tokens=usage.total_tokens,
+            cached_input_tokens=getattr(usage, "prompt_tokens_details", {}).get("cached_tokens", 0) if usage else 0,
         ) if usage else None
 
         return ModelResponse(
             text=text_out,
-            model=self._model,
-            token_usage=token_usage,
+            model_used=self._model,
+            usage=token_usage,
             finish_reason=response.choices[0].finish_reason or "stop",
         )
