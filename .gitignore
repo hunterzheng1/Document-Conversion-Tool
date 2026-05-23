@@ -1,0 +1,19 @@
+# KLD SDD AI 编辑器个人配置（请勿提交）
+.cursor/
+.claude/
+.codebuddy/
+.qoder/
+.kunlunzhima/
+.workbuddy/
+.agents/
+
+# SDD Telemetry 数据（本地度量，可选提交）
+skywalk-sdd/events/
+skywalk-sdd/reports/
+skywalk-sdd/state/
+
+# 本地开发目录（不提交）
+openspec-templates/
+openspec/
+requirements/
+skywalk-sdd/
