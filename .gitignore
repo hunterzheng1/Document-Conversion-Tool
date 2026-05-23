@@ -1,11 +1,23 @@
 # KLD SDD AI 编辑器个人配置（请勿提交）
-.cursor/
 .claude/
 .codebuddy/
+.cursor/
 .qoder/
 .kunlunzhima/
 .workbuddy/
 .agents/
+
+# Python 缓存
+*.pyc
+__pycache__/
+*.egg-info/
+.eggs/
+build/
+dist/
+
+# 本地运行时
+.cache/
+.state/
 
 # SDD Telemetry 数据（本地度量，可选提交）
 skywalk-sdd/events/
