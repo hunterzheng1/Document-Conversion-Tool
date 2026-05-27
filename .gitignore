@@ -29,3 +29,6 @@ openspec-templates/
 openspec/
 requirements/
 skywalk-sdd/
+
+# DocSync 配置（本地生成）
+.docsync/
