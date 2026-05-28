@@ -1,0 +1,8 @@
+# 服务运行依赖（API + Worker）
+# 对应 pyproject.toml [project.optional-dependencies].service
+-r requirements.txt
+
+fastapi>=0.110.0,<1.0
+uvicorn>=0.27.0
+python-multipart>=0.0.9
+pydantic>=2.0

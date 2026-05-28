@@ -1,0 +1,7 @@
+# 基础运行依赖（core + PDF 解析 + 配置）
+# 对应 pyproject.toml [project].dependencies
+click>=8.1
+PyMuPDF>=1.23.0
+Pillow>=10.0
+pyyaml>=6.0
+httpx>=0.27.0

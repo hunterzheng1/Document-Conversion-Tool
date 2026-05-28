@@ -1,0 +1,55 @@
+# 敏感文件（防止泄露到镜像）
+.env
+.env.*
+!.env.example
+
+# 运行时数据（数据必须 volume 化，不进入镜像）
+.data/
+.cache/
+.state/
+*.sqlite3
+.docconv_*
+
+# Git 与开发工具
+.git/
+.gitignore
+.github/
+.claude/
+.codebuddy/
+.cursor/
+.qoder/
+.kunlunzhima/
+.workbuddy/
+.agents/
+.docsync/
+
+# Python 缓存与构建产物
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.eggs/
+build/
+dist/
+*.egg
+
+# 测试与文档（非运行时内容）
+tests/
+docs/
+requirements/
+
+# SDD 工程文件
+openspec/
+openspec-templates/
+skywalk-sdd/
+plans/
+NOTES.md
+
+# IDE 配置
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Makefile 和脚本（运行时不需要）
+Makefile

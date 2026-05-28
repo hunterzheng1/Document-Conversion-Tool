@@ -1,0 +1,48 @@
+# ============================================================
+# DocConv Docker Compose 示例部署配置
+# 复制为 docker-compose.yml 后使用：
+#   cp docker-compose.yml.example docker-compose.yml
+#   docker compose up -d
+# ============================================================
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: docconv serve
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    environment:
+      - SERVER_HOST=0.0.0.0
+      - SERVER_PORT=8000
+      - STORAGE_ROOT=/data/docconv
+    volumes:
+      - docconv-data:/data
+    healthcheck:
+      test: ["CMD", "python", "-c", "import http.client; c = http.client.HTTPConnection('127.0.0.1', 8000); c.request('GET', '/api/v1/health'); r = c.getresponse(); exit(0 if r.status == 200 else 1)"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    restart: unless-stopped
+    depends_on: []
+
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: docconv worker
+    env_file:
+      - .env
+    environment:
+      - STORAGE_ROOT=/data/docconv
+    volumes:
+      - docconv-data:/data
+    restart: unless-stopped
+
+volumes:
+  docconv-data:
+    driver: local

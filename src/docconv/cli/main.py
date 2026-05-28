@@ -7,13 +7,13 @@ import os
 import sys
 
 import click
-import yaml
 
 from docconv import __version__
 from docconv.core.converter import DocumentConverter
 from docconv.core.types import ConversionResult
 from docconv.infra.state_manager import StateManager
 from docconv.infra.cache_manager import CacheManager
+from docconv.infra.config import load_app_config
 from docconv.infra.logger import setup_logger
 from docconv.output.markdown_writer import MarkdownWriter
 from docconv.output.report_writer import ReportWriter
@@ -21,12 +21,9 @@ from docconv.output.report_writer import ReportWriter
 logger = setup_logger("docconv")
 
 
-def load_config(config_path: str) -> dict:
-    """加载配置文件。"""
-    if not config_path or not os.path.exists(config_path):
-        return {}
-    with open(config_path, encoding="utf-8") as f:
-        return yaml.safe_load(f) or {}
+def load_config(config_path: str | None = None) -> dict:
+    """加载配置文件（统一配置入口）。"""
+    return load_app_config(config_path)
 
 
 @click.group()
@@ -142,12 +139,27 @@ def status(ctx, input_file):
         cache_stats = cache_mgr.get_stats()
         click.echo(f"缓存: {cache_stats['entries']} 条目，{cache_stats['total_size_mb']} MB")
     else:
+        # 显示所有任务状态（包括本地 state 和 job store）
         states = state_mgr.list_states()
         if not states:
             click.echo("无转换状态")
-            return
-        for s in states:
-            click.echo(f"  {s.file_path}: {s.status} ({s.progress:.1%}) - {len(s.completed_pages)}/{s.total_pages} 页")
+        else:
+            for s in states:
+                click.echo(f"  {s.file_path}: {s.status} ({s.progress:.1%}) - {len(s.completed_pages)}/{s.total_pages} 页")
+
+        # 尝试从 job store 读取服务端任务状态
+        storage_root = cfg.get("storage", {}).get("root", ".docconv/storage")
+        try:
+            from docconv.service.job_store import SQLiteJobStore
+            store = SQLiteJobStore(storage_root=storage_root)
+            jobs = store.list_recent_jobs(limit=20)
+            if jobs:
+                click.echo("\n服务端任务:")
+                for j in jobs:
+                    jd = j.to_dict()
+                    click.echo(f"  {jd.get('job_id', '')[:35]}: {jd.get('status', '')} - {jd.get('original_filename', '')}")
+        except Exception:
+            pass  # job store 不存在时静默跳过
 
 
 @main.command()
@@ -237,6 +249,14 @@ def check(ctx):
         base_url = mconf.get("base_url", "默认" if not mconf.get("base_url") else mconf["base_url"])
         status = "✅" if has_key else "❌"
         click.echo(f"  {status} {name}: API Key={'已配置' if has_key else '未配置'}, base_url={base_url}")
+
+
+# ---------------------------------------------------------------------------
+# 服务化扩展命令（serve / worker / job）
+# ---------------------------------------------------------------------------
+from docconv.cli.service_commands import register_service_commands  # noqa: E402
+
+register_service_commands(main)
 
 
 if __name__ == "__main__":

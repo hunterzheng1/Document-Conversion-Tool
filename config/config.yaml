@@ -62,6 +62,34 @@ logging:
   file: null
   redact_sensitive_content: true
 
+server:
+  enabled: true
+  host: "0.0.0.0"
+  port: 8000
+  api_prefix: "/api/v1"
+  upload:
+    max_file_size_mb: 100
+    allowed_extensions:
+      - ".pdf"
+  public_base_url: null
+  auth:
+    enabled: false
+    token: null
+  docs:
+    enabled: true
+
+storage:
+  root: ".data/docconv"
+
+jobs:
+  retention_hours: 24
+  max_running_jobs: 1
+  max_queued_jobs: 20
+  worker_poll_interval_seconds: 2
+  recover_running_on_start: true
+  cleanup_expired: true
+  recover_timeout_seconds: 600
+
 sensitive_mode:
   disable_disk_cache: true
   disable_ai_output_cache: true

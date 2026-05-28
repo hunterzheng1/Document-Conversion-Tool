@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>docconv - PDF 转 Markdown</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>docconv</h1>
+      <p class="subtitle">PDF 转 Markdown 文档器</p>
+      <div id="health-indicator" class="health-checking">检查服务状态...</div>
+    </header>
+
+    <main>
+      <!-- 上传区 -->
+      <section id="upload-section">
+        <h2>上传 PDF</h2>
+        <div id="drop-zone" class="drop-zone">
+          <p>拖拽 PDF 文件到此处，或点击选择</p>
+          <input type="file" id="file-input" accept=".pdf" hidden>
+          <div id="file-info" class="file-info"></div>
+        </div>
+
+        <!-- 参数表单 -->
+        <form id="options-form" class="options-form">
+          <div class="form-group">
+            <label for="model-profile">模型档位</label>
+            <select id="model-profile">
+              <option value="auto">auto（自动）</option>
+              <option value="primary">primary（主模型）</option>
+              <option value="economy">economy（经济）</option>
+              <option value="fallback">fallback（降级）</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="dpi">DPI</label>
+            <input type="number" id="dpi" value="200" min="100" max="400">
+          </div>
+          <div class="form-group">
+            <label for="concurrency">并发页面数</label>
+            <input type="number" id="concurrency" value="2" min="1" max="5">
+          </div>
+          <div class="form-group">
+            <label for="instruction">指令（可选）</label>
+            <input type="text" id="instruction" maxlength="1000" placeholder="如：仅提取表格部分">
+          </div>
+          <div class="form-group checkbox-group">
+            <label><input type="checkbox" id="no-cache"> 禁用缓存</label>
+            <label><input type="checkbox" id="sensitive"> 敏感模式</label>
+            <label><input type="checkbox" id="dry-run"> 预检模式（dry-run）</label>
+          </div>
+          <button type="submit" id="submit-btn" class="btn-primary" disabled>开始转换</button>
+        </form>
+      </section>
+
+      <!-- 错误展示 -->
+      <div id="error-display" class="error-display" hidden>
+        <p id="error-message"></p>
+      </div>
+
+      <!-- 任务状态面板 -->
+      <section id="job-panel" class="job-panel" hidden>
+        <h2>转换任务</h2>
+        <div class="job-status">
+          <p>任务 ID: <code id="job-id"></code></p>
+          <p>状态: <span id="job-status" class="status-badge"></span></p>
+          <div id="progress-bar" class="progress-bar" hidden>
+            <div id="progress-fill" class="progress-fill"></div>
+            <span id="progress-text" class="progress-text"></span>
+          </div>
+          <div id="job-error" class="job-error" hidden>
+            <p>错误: <span id="job-error-message"></span></p>
+          </div>
+          <div id="result-actions" class="result-actions" hidden>
+            <button id="download-md" class="btn-secondary">下载 Markdown</button>
+            <button id="download-report" class="btn-secondary">下载报告</button>
+            <button id="new-job" class="btn-secondary">新建转换</button>
+          </div>
+          <div id="cancel-action" hidden>
+            <button id="cancel-job" class="btn-warning">取消任务</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- 最近任务列表 -->
+      <section id="recent-jobs" class="recent-jobs" hidden>
+        <h2>最近任务</h2>
+        <ul id="recent-jobs-list"></ul>
+      </section>
+    </main>
+
+    <footer>
+      <p>docconv v1.0.0 &middot; <a href="/docs" target="_blank">API 文档</a></p>
+    </footer>
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

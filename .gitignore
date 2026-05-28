@@ -15,9 +15,17 @@ __pycache__/
 build/
 dist/
 
-# 本地运行时
+# 环境变量与运行时数据
+.env
+.env.*
+!.env.example
+.data/
 .cache/
 .state/
+*.sqlite3
+
+# DocConv 运行时数据
+.docconv_*
 
 # SDD Telemetry 数据（本地度量，可选提交）
 skywalk-sdd/events/
@@ -32,3 +40,12 @@ skywalk-sdd/
 
 # DocSync 配置（本地生成）
 .docsync/
+
+# KLD SDD 补充忽略规则
+.cursor/commands/personal-*
+.claude/commands/personal-*
+.codebuddy/commands/personal-*
+.qoder/commands/personal-*
+.kunlunzhima/commands/personal-*
+.workbuddy/commands/personal-*
+.agents/commands/personal-*

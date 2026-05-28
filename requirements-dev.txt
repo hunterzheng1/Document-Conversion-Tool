@@ -1,0 +1,9 @@
+# 开发依赖（测试 + 代码质量）
+# 对应 pyproject.toml [project.optional-dependencies].dev
+-r requirements.txt
+-r requirements-service.txt
+
+pytest>=7.0
+pytest-asyncio>=0.23.0
+ruff>=0.4.0
+coverage>=7.0

@@ -1,0 +1,37 @@
+# DocConv Worker 服务单元文件
+# 安装到 /etc/systemd/system/docconv-worker.service
+#
+# 启用开机自启：systemctl enable docconv-worker
+# 启动服务：systemctl start docconv-worker
+# 查看日志：journalctl -u docconv-worker -f
+
+[Unit]
+Description=DocConv Worker Process
+After=network.target docconv-api.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=docconv
+Group=docconv
+WorkingDirectory=/opt/docconv
+ExecStart=/opt/docconv/venv/bin/docconv worker
+Restart=always
+RestartSec=5
+TimeoutStopSec=30
+
+# 环境变量文件
+EnvironmentFile=/etc/docconv/.env
+
+# 安全加固
+NoNewPrivileges=true
+ProtectSystem=strict
+ReadWritePaths=/data
+
+# 日志到 journal
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=docconv-worker
+
+[Install]
+WantedBy=multi-user.target

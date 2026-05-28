@@ -8,7 +8,7 @@ import time
 from pathlib import Path
 
 from ..parser.pdf_parser import PDFParser
-from ..infra.cache_manager import CacheManager
+from ..infra.cache_manager import CacheManager, CacheEntry
 from ..infra.state_manager import StateManager, ConversionState
 from ..infra.metrics import MetricsCollector
 from .types import ConversionResult, PageContent
@@ -90,24 +90,29 @@ class DocumentConverter:
         page_num: int,
         file_path: str,
     ) -> PageContent:
-        """带缓存的页面处理。"""
+        """带缓存的页面处理（TASK-CM-04：修复缓存调用）。"""
         cache_key = f"{file_hash(file_path)}_page_{page_num}"
-        cached = self._cache.get(cache_key)
+        cached = self._cache.get_cache(cache_key)
 
         if cached:
             logger.debug(f"缓存命中：页面 {page_num + 1}")
-            return PageContent(**cached)
+            return PageContent(
+                page_num=page_num + 1,
+                page_type=cached.content_type,
+                markdown=cached.content,
+                images_processed=0,
+                token_usage=cached.quality or {},
+                errors=[],
+            )
 
         page = await self._pipeline.process_page(parser, page_num)
 
-        self._cache.set(cache_key, {
-            "page_num": page.page_num,
-            "page_type": page.page_type,
-            "markdown": page.markdown,
-            "images_processed": page.images_processed,
-            "token_usage": page.token_usage,
-            "errors": page.errors,
-        })
+        self._cache.set_cache(cache_key, CacheEntry(
+            cache_key=cache_key,
+            content_type=page.page_type,
+            content=page.markdown,
+            quality=page.token_usage or {},
+        ))
 
         return page
 
